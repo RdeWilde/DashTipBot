@@ -38,8 +38,9 @@ public class BalanceCommand extends AbstractCommand {
         Process process = new ProcessBuilder("dash-cli", "getreceivedbyaddress", receivingAddress, "6").start();
         String s = new BufferedReader(new InputStreamReader(process.getInputStream())).readLine();
         if (s == null || s.startsWith("e")) return;
+        String previousReceived = getValue(RECEIVED, user, "0");
         String previous = getValue(BALANCES, user, "0");
-        Double addToBalance = Double.parseDouble(s) - Double.parseDouble(previous);
+        Double addToBalance = Double.parseDouble(s) - Double.parseDouble(previousReceived);
         if (addToBalance < .0000001D) return;
         TransactionLog.log("adding " + addToBalance + " to balance for user " + user.getStringID());
         setValue(RECEIVED, user, s);
